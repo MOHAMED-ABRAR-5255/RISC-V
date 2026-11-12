@@ -1,0 +1,19 @@
+DESIGN REVIEW – DAY 2 FSMs AND FIFO
+
+1. Sequence detector:
+   Both FSMs use combinational next-state logic with default assignments for next_state and output. A default state branch returns the machine to its idle state. No inferred latches remain. The Mealy output is asserted on the input bit that completes 1011; the Moore output is asserted in the detection state for one clock interval.
+
+2. Vending controller:
+   The sequential outputs dispense and change are assigned in every reset/non-reset clock branch. The combinational next_credit block has a default assignment before coin selection. The controller clears credit after dispensing or cancellation. No incomplete combinational assignments remain.
+
+3. FIFO:
+   full and empty are continuous assignments from the occupancy count. The sequential process covers reset and all four combinations of accepted read/write operations. The default case intentionally holds registers. Writes while full and reads while empty are rejected. Simultaneous accepted read/write leaves count unchanged.
+
+4. Traffic light and ATM:
+   Their combinational next-state/output blocks start with safe defaults and include default state recovery. Sequential state and data registers are assigned on reset and clocked updates. No latches are intended.
+
+5. Arbiter:
+   Grant outputs are registered and default to retaining the active grant until its request is released. The next-priority pointer changes only after release. Reset initializes the pointer and grant state.
+
+Conclusion:
+All combinational blocks use complete default assignments and all state updates use clocked always blocks. The designs were structured to avoid unintended latches and incomplete if/else or case branches. Simulation should still be run after any local edits.
